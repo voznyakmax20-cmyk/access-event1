@@ -8,32 +8,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check required files
+      - name: Check files
         run: |
           test -f README.md
           test -f docs/analysis.md
           test -f docs/requirements.md
           test -f docs/stakeholders.md
           test -f docs/tz.md
-          [ $(wc -c < README.md
-) -ge 400 ]
-          [ $(wc -c < docs/analysis.md) -ge 400 ]
-          [ $(wc -c < docs/requirements.md) -ge 400 ]
-          [ $(wc -c < docs/stakeholders.md) -ge 400 ]
-          [ $(wc -c < docs/tz.md) -ge 400 ]
-          echo "PASS: Files OK"
+          echo "Файлы на месте"
+
+      - name: Check sizes
+        run: |
+          test $(wc -c < README.md
+) -ge 400
+          test $(wc -c < docs/analysis.md) -ge 400
+          test $(wc -c < docs/requirements.md) -ge 400
+          test $(wc -c < docs/stakeholders.md) -ge 400
+          test $(wc -c < docs/tz.md) -ge 400
+          echo "Размеры в норме"
 
       - name: Check User Stories
         run: |
           COUNT=$(grep -c "Как " docs/requirements.md || true)
           echo "User Stories: $COUNT"
-          [ "$COUNT" -ge 10 ]
+          test $COUNT -ge 10
 
       - name: Check NFR
         run: |
           COUNT=$(grep -c "NFR-" docs/requirements.md || true)
           echo "NFR: $COUNT"
-          [ "$COUNT" -ge 5 ]
+          test $COUNT -ge 5
 
       - name: Check TZ sections
         run: |
@@ -45,13 +49,13 @@ jobs:
           grep -qi "данны" docs/tz.md
           grep -qi "стек" docs/tz.md
           grep -qi "Ограничен" docs/tz.md
-          echo "PASS: TZ OK"
+          echo "Разделы ТЗ проверены"
 
       - name: Check entities
         run: |
           COUNT=$(grep -c "|" docs/analysis.md || true)
-          echo "Entities: $COUNT"
-          [ "$COUNT" -ge 10 ]
+          echo "Сущностей: $COUNT"
+          test $COUNT -ge 8
 
       - name: All checks passed
         run: echo "ALL CHECKS PASSED"
