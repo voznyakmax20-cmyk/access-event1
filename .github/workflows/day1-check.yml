@@ -10,7 +10,7 @@ jobs:
       
       - name: Check required files
         run: |
-          echo "=== Checking files ==="
+echo "=== Checking files ==="
           for f in README.md docs/analysis.md docs/requirements.md docs/tz.md docs/stakeholders.md; do
             if [ -f "$f" ]; then
               echo "PASS: $f found"
@@ -61,7 +61,7 @@ jobs:
           if [ "$COUNT" -lt 10 ]; then
             echo "FAIL: need more entities in analysis.md"
             exit 1
-          fi
+fi
           echo "PASS: Entities OK"
           
       - name: All checks passed
