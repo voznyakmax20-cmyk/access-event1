@@ -71,6 +71,9 @@ CREATE TABLE notifications (
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE INDEX idx_registrations_user ON registrations(user_id);
+CREATE INDEX idx_messages_event ON messages(event_id);
+CREATE INDEX idx_notifications_user ON notifications(user_id, is_read);
 
 -- Индексы
 CREATE INDEX idx_events_date ON events(event_date);
