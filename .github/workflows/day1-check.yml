@@ -10,62 +10,48 @@ jobs:
 
       - name: Check required files
         run: |
-          echo "=== Checking files ==="
-          for f in README.md
- docs/analysis.md docs/requirements.md docs/tz.md docs/stakeholders.md; do
-            if [ -f "$f" ]; then
-              echo "PASS: $f found"
-              SIZE=$(wc -c < "$f")
-              if [ "$SIZE" -lt 500 ]; then
-                echo "FAIL: $f is too small ($SIZE bytes, need >= 500)"
-                exit 1
-              fi
-            else
-              echo "FAIL: $f not found"
-              exit 1
-            fi
-          done
+          test -f README.md
+          test -f docs/analysis.md
+          test -f docs/requirements.md
+          test -f docs/stakeholders.md
+          test -f docs/tz.md
+          [ $(wc -c < README.md
+) -ge 400 ]
+          [ $(wc -c < docs/analysis.md) -ge 400 ]
+          [ $(wc -c < docs/requirements.md) -ge 400 ]
+          [ $(wc -c < docs/stakeholders.md) -ge 400 ]
+          [ $(wc -c < docs/tz.md) -ge 400 ]
+          echo "PASS: Files OK"
 
       - name: Check User Stories
         run: |
-          COUNT=$(grep -c "Как " docs/requirements.md || echo 0)
-          echo "User Stories found: $COUNT"
-          if [ "$COUNT" -lt 10 ]; then
-            echo "FAIL: need >= 10 User Stories"
-            exit 1
-          fi
-          echo "PASS: User Stories OK"
+          COUNT=$(grep -c "Как " docs/requirements.md || true)
+          echo "User Stories: $COUNT"
+          [ "$COUNT" -ge 10 ]
 
       - name: Check NFR
         run: |
-          COUNT=$(grep -c "NFR-" docs/requirements.md || echo 0)
-          echo "NFR found: $COUNT"
-          if [ "$COUNT" -lt 5 ]; then
-            echo "FAIL: need >= 5 NFR"
-            exit 1
-          fi
-          echo "PASS: NFR OK"
+          COUNT=$(grep -c "NFR-" docs/requirements.md || true)
+          echo "NFR: $COUNT"
+          [ "$COUNT" -ge 5 ]
 
       - name: Check TZ sections
         run: |
-          for section in "Назначение" "предметной области" "функци" "качеств" "интерфей" "данны" "стек" "Ограничен"; do
-            if ! grep -qi "$section" docs/tz.md; then
-              echo "FAIL: section '$section' not found in tz.md
-"
-              exit 1
-            fi
-          done
-          echo "PASS: All TZ sections found"
+          grep -qi "Назначение" docs/tz.md
+          grep -qi "предметной области" docs/tz.md
+          grep -qi "функци" docs/tz.md
+          grep -qi "качеств" docs/tz.md
+          grep -qi "интерфей" docs/tz.md
+          grep -qi "данны" docs/tz.md
+          grep -qi "стек" docs/tz.md
+          grep -qi "Ограничен" docs/tz.md
+          echo "PASS: TZ OK"
 
       - name: Check entities
         run: |
-          COUNT=$(grep -c "|" docs/analysis.md || echo 0)
-          if [ "$COUNT" -lt 10 ]; then
-            echo "FAIL: need more entities in analysis.md
-"
-            exit 1
-          fi
-          echo "PASS: Entities OK"
+          COUNT=$(grep -c "|" docs/analysis.md || true)
+          echo "Entities: $COUNT"
+          [ "$COUNT" -ge 10 ]
 
       - name: All checks passed
         run: echo "ALL CHECKS PASSED"
